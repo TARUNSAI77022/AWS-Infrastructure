@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Infrastructure Cost Comparison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.025em;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+
+        .provider-toggle {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .provider-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .provider-toggle:hover::before {
+            left: 100%;
+        }
+
+        .provider-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .provider-toggle.active {
+            background: #4285f4;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
+        }
+
+        .provider-toggle.gcp.active {
+            background: #4285f4;
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
+        }
+
+        .provider-toggle.aws.active {
+            background: #ff9900;
+            box-shadow: 0 8px 25px rgba(255, 153, 0, 0.3);
+        }
+
+        .provider-toggle.azure.active {
+            background: #0078d4;
+            box-shadow: 0 8px 25px rgba(0, 120, 212, 0.3);
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #3498db;
+        }
+
+        .service-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .service-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .detail-item:hover {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .detail-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .cost-highlight {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+        }
+
+        .cost-summary {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            margin-bottom: 48px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cost-summary h3 {
+            color: #1a1a1a;
+            margin-bottom: 32px;
+            text-align: center;
+            font-size: 2.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cost-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 32px;
+        }
+
+        .cost-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 3px solid transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cost-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cost-item:hover::before {
+            opacity: 1;
+        }
+
+        .cost-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .cost-item.gcp {
+            border-color: #4285f4;
+            background: linear-gradient(135deg, #e8f0fe 0%, #f3f8ff 100%);
+        }
+
+        .cost-item.gcp:hover {
+            box-shadow: 0 25px 60px rgba(66, 133, 244, 0.2);
+        }
+
+        .cost-item.aws {
+            border-color: #ff9900;
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
+        }
+
+        .cost-item.aws:hover {
+            box-shadow: 0 25px 60px rgba(255, 153, 0, 0.2);
+        }
+
+        .cost-item.azure {
+            border-color: #0078d4;
+            background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+        }
+
+        .cost-item.azure:hover {
+            box-shadow: 0 25px 60px rgba(0, 120, 212, 0.2);
+        }
+
+        .cost-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cost-label {
+            color: #5f6368;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .cost-breakdown {
+            font-size: 1rem;
+            color: #5f6368;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid currentColor;
+        }
+
+        .provider-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .gcp-badge {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+        }
+
+        .aws-badge {
+            background: linear-gradient(135deg, #ff9900, #ff6900);
+        }
+
+        .azure-badge {
+            background: linear-gradient(135deg, #0078d4, #106ebe);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 320px;
+            background: linear-gradient(135deg, #333, #555);
+            color: #fff;
+            text-align: center;
+            border-radius: 12px;
+            padding: 16px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -160px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .tooltip .tooltiptext::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(-8px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cost-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .service-details {
+                grid-template-columns: 1fr;
+            }
+
+            .cost-value {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Animation for page load */
+        .service-card {
+            animation: slideInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .service-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .service-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .service-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .service-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .service-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Pulse animation for cost highlights */
+        .cost-highlight {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☁️ Cloud Infrastructure Comparison</h1>
+            <p>Comprehensive analysis of Compute, Database, and Storage services across major cloud providers</p>
+        </div>
+
+        <div class="controls">
+            <button class="provider-toggle active" onclick="toggleProvider('all')">All Providers</button>
+            <button class="provider-toggle gcp" onclick="toggleProvider('gcp')">GCP Only</button>
+            <button class="provider-toggle aws" onclick="toggleProvider('aws')">AWS Only</button>
+        </div>
+
+        <div class="service-grid" id="serviceGrid">
+            <!-- AWS Compute -->
+            <div class="service-card aws-service">
+                <h3>
+                    <span class="tooltip">AWS EC2
+                        <span class="tooltiptext">Amazon Elastic Compute Cloud - Secure and resizable compute capacity
+                            in the cloud with industry-leading price-performance</span>
+                    </span>
+                    <span class="provider-badge aws-badge">AWS</span>
+                </h3>
+                <div class="service-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Instance Type</div>
+                        <div class="detail-value">c6g.xlarge</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">vCPUs</div>
+                        <div class="detail-value">4</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Memory</div>
+                        <div class="detail-value">8 GiB</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Storage</div>
+                        <div class="detail-value">100 GB</div>
+                    </div>
+                    <div class="detail-item cost-highlight">
+                        <div class="detail-label">Monthly Cost</div>
+                        <div class="detail-value">$57.15 (approx)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GCP Compute -->
+            <div class="service-card gcp-service">
+                <h3>
+                    <span class="tooltip">GCP Compute Engine
+                        <span class="tooltiptext">Google's scalable, high-performance virtual machines running in
+                            Google's innovative data centers with advanced security</span>
+                    </span>
+                    <span class="provider-badge gcp-badge">GCP</span>
+                </h3>
+                <div class="service-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Instance Type</div>
+                        <div class="detail-value">n4-custom</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">vCPUs</div>
+                        <div class="detail-value">4</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Memory</div>
+                        <div class="detail-value">8 GiB</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Storage</div>
+                        <div class="detail-value">100 GB</div>
+                    </div>
+                    <div class="detail-item cost-highlight">
+                        <div class="detail-label">Monthly Cost</div>
+                        <div class="detail-value">$129.72 (approx)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AWS Database -->
+            <div class="service-card aws-service">
+                <h3>
+                    <span class="tooltip">AWS RDS
+                        <span class="tooltiptext">Amazon Relational Database Service - Managed relational database with
+                            automated backups, software patching, and monitoring</span>
+                    </span>
+                    <span class="provider-badge aws-badge">AWS</span>
+                </h3>
+                <div class="service-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Instance Type</div>
+                        <div class="detail-value">db.t4g.medium</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">vCPUs</div>
+                        <div class="detail-value">2</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Memory</div>
+                        <div class="detail-value">4 GiB</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Storage</div>
+                        <div class="detail-value">100 GB</div>
+                    </div>
+                    <div class="detail-item cost-highlight">
+                        <div class="detail-label">Monthly Cost</div>
+                        <div class="detail-value">$81.57 (approx)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AWS Storage -->
+            <div class="service-card aws-service">
+                <h3>
+                    <span class="tooltip">AWS S3
+                        <span class="tooltiptext">Amazon Simple Storage Service - Object storage built to store and
+                            retrieve any amount of data from anywhere on the web</span>
+                    </span>
+                    <span class="provider-badge aws-badge">AWS</span>
+                </h3>
+                <div class="service-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Storage Class</div>
+                        <div class="detail-value">Standard</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Storage Size</div>
+                        <div class="detail-value">100 GB</div>
+                    </div>
+                    <div class="detail-item cost-highlight">
+                        <div class="detail-label">Monthly Cost</div>
+                        <div class="detail-value">$2.50 (approx)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GCP Storage -->
+            <div class="service-card gcp-service">
+                <h3>
+                    <span class="tooltip">GCP Cloud Storage
+                        <span class="tooltiptext">Google's highly available object storage for unstructured data with
+                            automatic encryption and global edge caching</span>
+                    </span>
+                    <span class="provider-badge gcp-badge">GCP</span>
+                </h3>
+                <div class="service-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Storage Class</div>
+                        <div class="detail-value">Standard</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Storage Size</div>
+                        <div class="detail-value">100 GB</div>
+                    </div>
+                    <div class="detail-item cost-highlight">
+                        <div class="detail-label">Monthly Cost</div>
+                        <div class="detail-value">$3.10 (approx)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cost-summary">
+            <h3>💰 Total Monthly Cost Comparison</h3>
+            <div class="cost-comparison">
+                <div class="cost-item aws aws-cost">
+                    <div class="cost-value">$141.22 (approx)</div>
+                    <div class="cost-label">Amazon Web Services</div>
+                    <div class="cost-breakdown">
+                        <strong>Service Breakdown:</strong><br>
+                        💻 Compute (EC2): $57.15<br>
+                        🗄️ Database (RDS): $81.57<br>
+                        📦 Storage (S3): $2.50
+                    </div>
+                </div>
+
+                <div class="cost-item gcp gcp-cost">
+                    <div class="cost-value">$132.82 (approx)</div>
+                    <div class="cost-label">Google Cloud Platform</div>
+                    <div class="cost-breakdown">
+                        <strong>Service Breakdown:</strong><br>
+                        💻 Compute Engine: $129.72<br>
+                        🗄️ Database: $0.00<br>
+                        📦 Cloud Storage: $3.10
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProvider = 'all';
+
+        function toggleProvider(provider) {
+            currentProvider = provider;
+
+            // Update button states
+            document.querySelectorAll('.provider-toggle').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Show/hide service cards
+            const gcpServices = document.querySelectorAll('.gcp-service');
+            const awsServices = document.querySelectorAll('.aws-service');
+            const azureServices = document.querySelectorAll('.azure-service');
+
+            // Show/hide cost items
+            const gcpCost = document.querySelector('.gcp-cost');
+            const awsCost = document.querySelector('.aws-cost');
+            const azureCost = document.querySelector('.azure-cost');
+
+            if (provider === 'all') {
+                gcpServices.forEach(card => card.style.display = 'block');
+                awsServices.forEach(card => card.style.display = 'block');
+                if (azureServices.length > 0) azureServices.forEach(card => card.style.display = 'block');
+                if (gcpCost) gcpCost.style.display = 'block';
+                if (awsCost) awsCost.style.display = 'block';
+                if (azureCost) azureCost.style.display = 'block';
+            } else if (provider === 'gcp') {
+                gcpServices.forEach(card => card.style.display = 'block');
+                awsServices.forEach(card => card.style.display = 'none');
+                if (azureServices.length > 0) azureServices.forEach(card => card.style.display = 'none');
+                if (gcpCost) gcpCost.style.display = 'block';
+                if (awsCost) awsCost.style.display = 'none';
+                if (azureCost) azureCost.style.display = 'none';
+            } else if (provider === 'aws') {
+                gcpServices.forEach(card => card.style.display = 'none');
+                awsServices.forEach(card => card.style.display = 'block');
+                if (azureServices.length > 0) azureServices.forEach(card => card.style.display = 'none');
+                if (gcpCost) gcpCost.style.display = 'none';
+                if (awsCost) awsCost.style.display = 'block';
+                if (azureCost) azureCost.style.display = 'none';
+            } else if (provider === 'azure') {
+                gcpServices.forEach(card => card.style.display = 'none');
+                awsServices.forEach(card => card.style.display = 'none');
+                if (azureServices.length > 0) azureServices.forEach(card => card.style.display = 'block');
+                if (gcpCost) gcpCost.style.display = 'none';
+                if (awsCost) awsCost.style.display = 'none';
+                if (azureCost) azureCost.style.display = 'block';
+            }
+        }
+
+        // Add smooth scrolling and enhanced interactions
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add ripple effect to buttons
+            const buttons = document.querySelectorAll('.provider-toggle');
+            buttons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud Infrastructure Plan: User Goals & Platform Comparison</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 40px 20px;
+      color: #1e293b;
+    }
+
+    .section {
+        max-width: 1200px;
+        margin: 0 auto 50px auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: #475569;
+      max-width: 750px;
+      margin: 10px auto 0;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 40px;
+        color: #1d4ed8;
+    }
+
+    /* User Goals Section */
+    .user-goals {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 40px;
+    }
+    
+    .impact-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+    }
+    
+    .impact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    
+    .impact-icon {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: #e0e7ff;
+    }
+    
+    .impact-icon svg {
+        width: 24px;
+        height: 24px;
+        color: #3730a3;
+    }
+    
+    .impact-item h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+    }
+    
+    .impact-item p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #475569;
+        margin: 0;
+    }
+
+    /* Comparison Section */
+    .comparison-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .cloud-column h3 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    .aws-title { color: #FF9900; }
+    .gcp-title { color: #4285F4; }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 30px;
+    }
+
+    .card-header {
+      margin-bottom: 15px;
+    }
+
+    .card-header h4 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0 0 5px 0;
+      color: #000;
+    }
+    
+    .card-header p {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #475569;
+      margin: 0;
+    }
+    
+    .card .use-case {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #475569;
+        margin: 0 0 20px 0;
+        flex-grow: 1;
+    }
+
+    .cost {
+      text-align: right;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #16a34a;
+    }
+    
+    .cost span {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #475569;
+    }
+    
+    /* Total Cost Section */
+    .total-cost-section {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 30px;
+    }
+    
+    .cost-comparison {
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+    }
+    
+    .cost-total h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .cost-total .total-amount {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    
+    .aws-total { color: #FF9900; }
+    .gcp-total { color: #4285F4; }
+
+    footer {
+      text-align: center;
+      margin: 60px 0 20px;
+      font-size: 1rem;
+      color: #64748b;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cloud Infrastructure Plan</h1>
+    <p>First, we define our goals for the user experience. Then, we compare two leading cloud platforms to see how they can help us achieve those goals and at what cost.</p>
+  </header>
+
+  <div class="section user-goals">
+    <h2 class="section-title">Our Goals for the User Experience</h2>
+    <div class="impact-list">
+      <div class="impact-item">
+        <div class="impact-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-3.75-2.25M21 12l-3.75 2.25" /></svg>
+        </div>
+        <div>
+          <h4>High Performance</h4>
+          <p>The application must be fast and responsive, even during peak hours.</p>
+        </div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75-.75v-.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V4.5m1.5.75v-.75a.75.75 0 00-.75-.75H3a.75.75 0 00-.75.75v.75m1.5 0v.375a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0021 6.375v-.375m0 0h-.375a1.125 1.125 0 00-1.125 1.125v9.75c0 .621.504 1.125 1.125 1.125h.375m-1.5-1.5h.75a.75.75 0 01.75.75v.75m0 0v-.375a1.125 1.125 0 01-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v.375m1.5-1.5H2.25m18 0h.75a.75.75 0 01.75.75v.75M2.25 18v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v.375c0 .621-.504 1.125-1.125 1.125H3.375c-.621 0-1.125-.504-1.125-1.125v-.375m1.5-1.5H2.25m18 0h.75a.75.75 0 01.75.75v.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125v-9.75c0-.621.504-1.125 1.125-1.125h.375M3.75 18v-.75a.75.75 0 01.75-.75h13.5a.75.75 0 01.75.75v.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v.375c0 .621-.504 1.125-1.125 1.125H3.375c-.621 0-1.125-.504-1.125-1.125v-.375m1.5-1.5H3.75" /></svg>
+        </div>
+        <div>
+          <h4>Scalable & Ready for Growth</h4>
+          <p>The infrastructure must handle a growing user base and sudden traffic spikes without crashing.</p>
+        </div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.008h-.008v-.008z" /></svg>
+        </div>
+        <div>
+          <h4>Secure & Reliable</h4>
+          <p>User data must be protected, and the application should be available and online at all times.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section comparison">
+    <h2 class="section-title">Platform Comparison: Pricing & Use</h2>
+    <div class="comparison-container">
+      <!-- AWS Column -->
+      <div class="cloud-column">
+        <h3 class="aws-title"><img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" height="30"> AWS</h3>
+        <div class="card">
+          <div class="card-header"><h4>The Engine</h4><p>(Amazon EKS)</p></div>
+          <p class="use-case"><strong>Use:</strong> To run the application's code and automatically manage computing power.</p>
+          <div class="cost">~$73.00 <span>/ month</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h4>The Memory</h4><p>(Amazon DynamoDB)</p></div>
+          <p class="use-case"><strong>Use:</strong> To store all application and user data in a fast, flexible database that we pay for as we use.</p>
+          <div class="cost">~$25.63 <span>/ month</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h4>The Fortress</h4><p>(Amazon VPC)</p></div>
+          <p class="use-case"><strong>Use:</strong> To protect the entire system within a secure, private network.</p>
+          <div class="cost">~$47.33 <span>/ month</span></div>
+        </div>
+      </div>
+
+      <!-- GCP Column -->
+      <div class="cloud-column">
+        <h3 class="gcp-title"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-cloud-logo.svg" alt="GCP Logo" height="30"> GCP</h3>
+        <div class="card">
+          <div class="card-header"><h4>The Engine</h4><p>(Google Kubernetes Engine)</p></div>
+          <p class="use-case"><strong>Use:</strong> To run the application's code using Google's powerful container management system.</p>
+          <div class="cost">~$100.00 <span>/ month</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h4>The Memory</h4><p>(Google Cloud Firestore)</p></div>
+          <p class="use-case"><strong>Use:</strong> To store application and user data in a database designed for web and mobile apps.</p>
+          <div class="cost">~$20.00 <span>/ month</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h4>The Fortress</h4><p>(Google Cloud VPC)</p></div>
+          <p class="use-case"><strong>Use:</strong> To secure all our services within Google's global, private network.</p>
+          <div class="cost">~$45.00 <span>/ month</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="section total-cost-section">
+    <h2 class="section-title">Total Estimated Monthly Cost</h2>
+    <div class="cost-comparison">
+        <div class="cost-total">
+            <h3 class="aws-title">AWS Total</h3>
+            <div class="total-amount aws-total">~$145.96</div>
+        </div>
+        <div class="cost-total">
+            <h3 class="gcp-title">GCP Total</h3>
+            <div class="total-amount gcp-total">~$165.00</div>
+        </div>
+    </div>
+  </div>
+
+  <footer>
+    This comparison helps us choose the most cost-effective platform that meets our user experience goals.
+  </footer>
+</body>
+</html>
